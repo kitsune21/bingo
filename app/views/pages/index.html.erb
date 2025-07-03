@@ -1,0 +1,8 @@
+<div>
+  <p>Welcome to bingo!</p>
+  <form method="post" action="/logout" data-turbo="false">
+    <input type="hidden" name="_method" value="delete">
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+    <button type="submit" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Logout</button>
+  </form>
+</div>
