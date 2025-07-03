@@ -1,8 +1,8 @@
-<div>
-  <p>Welcome to bingo!</p>
-  <form method="post" action="/logout" data-turbo="false">
+<div class="max-w-lg mx-auto mt-8 p-6 bg-white rounded shadow">
+  <p class="text-lg mb-4">Welcome to bingo!</p>
+  <form method="post" action="/logout" data-turbo="false" class="inline">
     <input type="hidden" name="_method" value="delete">
     <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-    <button type="submit" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Logout</button>
+    <button type="submit" class="text-blue-600 hover:text-blue-800 text-sm font-medium underline">Logout</button>
   </form>
 </div>
