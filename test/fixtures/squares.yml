@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  content: MyString
+  bingo_game: one
+  square_category: one
+  completed: false
+  completed_on: 2025-07-07 20:59:52
+
+two:
+  content: MyString
+  bingo_game: two
+  square_category: two
+  completed: false
+  completed_on: 2025-07-07 20:59:52
