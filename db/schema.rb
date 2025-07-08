@@ -60,6 +60,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_030003) do
   add_foreign_key "bingo_games", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "square_categories", "users"
-  add_foreign_key "squares", "bingos"
+  add_foreign_key "squares", "bingo_games"
   add_foreign_key "squares", "categories"
 end
