@@ -1,8 +1,16 @@
 <div class="max-w-lg mx-auto pt-8 p-6 bg-white rounded shadow">
   <p class="text-lg mb-4">Welcome to Bingo!</p>
-  <form method="post" action="/logout" data-turbo="false" class="inline">
-    <input type="hidden" name="_method" value="delete">
-    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-    <button type="submit" class="text-orange-600 hover:text-blue-800 text-sm font-medium underline">Logout</button>
-  </form>
+  <div>
+    <h1>Bingo Games</h1>
+    <div>
+      <% if @bingo_games.any? %>
+        <% @bingo_games.each do |game| %>
+          <p><%= game.name %>
+        <% end %>
+      <% else %>
+        <p>You don't currently have any bingo games</p>
+      <% end %>
+      <%= link_to "Start a new Bingo Board", new_bingo_game_path, class: "text-blue-600 underline" %>
+    </div>
+  </div>
 </div>
