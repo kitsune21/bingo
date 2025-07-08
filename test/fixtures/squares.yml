@@ -2,14 +2,14 @@
 
 one:
   content: MyString
-  bingo: one
-  category: one
+  bingo_game: one
+  square_category: one
   completed: false
   completed_on: 2025-07-07 20:59:52
 
 two:
   content: MyString
-  bingo: two
-  category: two
+  bingo_game: two
+  square_category: two
   completed: false
   completed_on: 2025-07-07 20:59:52
