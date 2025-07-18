@@ -33,6 +33,6 @@ class SquaresController < ApplicationController
   end
 
   def bingo_game_params
-    params.require(:bingo_game).permit(square_attributes: [ :id, :content, :ordering, :_destroy])
+    params.require(:bingo_game).permit(square_attributes: [ :id, :content, :ordering, :_destroy ])
   end
 end

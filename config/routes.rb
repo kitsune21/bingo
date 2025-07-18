@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resources :bingo_games, only: [ :index, :new, :create ]
   resources :bingo_games do
-    resources :squares, only: [:create, :update]
+    resources :squares, only: [ :create, :update ]
     member do
       get :generate_squares
     end
