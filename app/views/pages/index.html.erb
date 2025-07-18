@@ -5,12 +5,17 @@
     <div>
       <% if @bingo_games.any? %>
         <% @bingo_games.each do |game| %>
-          <p><%= game.name %>
+          <%= link_to game.name,
+            generate_squares_bingo_game_path(game.id),
+            class: "text-blue-600 underline"
+          %>
         <% end %>
       <% else %>
         <p>You don't currently have any bingo games</p>
       <% end %>
-      <%= link_to "Start a new Bingo Board", new_bingo_game_path, class: "text-blue-600 underline" %>
+      <div>
+        <%= link_to "Start a new Bingo Board", new_bingo_game_path, class: "text-blue-600 underline" %>
+      </div>
     </div>
   </div>
 </div>

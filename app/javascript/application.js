@@ -1,3 +1,18 @@
-// Entry point for the build script in your package.json
+// application.js
 import "@hotwired/turbo-rails";
-import "./controllers";
+import { Application } from "@hotwired/stimulus";
+
+// Import controllers
+import SquaresController from "./controllers/squares_controller.js";
+
+// Start Stimulus
+const application = Application.start();
+
+// Configure Stimulus
+application.debug = process.env.NODE_ENV === "development";
+window.Stimulus = application;
+
+// Register controllers
+application.register("squares", SquaresController);
+
+export { application };

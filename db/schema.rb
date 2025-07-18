@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_08_030003) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_18_152347) do
   create_table "bingo_games", force: :cascade do |t|
     t.string "name"
     t.integer "user_id", null: false
@@ -39,13 +39,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_030003) do
   create_table "squares", force: :cascade do |t|
     t.string "content"
     t.integer "bingo_game_id", null: false
-    t.integer "square_category_id", null: false
     t.boolean "completed"
     t.datetime "completed_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "ordering"
     t.index ["bingo_game_id"], name: "index_squares_on_bingo_game_id"
-    t.index ["square_category_id"], name: "index_squares_on_square_category_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -61,5 +60,4 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_030003) do
   add_foreign_key "sessions", "users"
   add_foreign_key "square_categories", "users"
   add_foreign_key "squares", "bingo_games"
-  add_foreign_key "squares", "square_categories"
 end
