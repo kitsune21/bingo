@@ -25,7 +25,7 @@ class SquaresControllerTest < ActionDispatch::IntegrationTest
 
   test "should update square" do
     patch bingo_game_square_path(@bingo_game, @square),
-          params: { square: { content: "Updated content" } },
+          params: { square: { content: "Updated content", ordering: 1 } },
           as: :json
 
     assert_response :success
