@@ -1,0 +1,31 @@
+<section>
+  <nav class="flex pl-4">
+    <%= link_to "Back", root_path, class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
+  </nav>
+  <h1 class="text-4xl font-extrabold text-center text-gray-900 pb-8"><%= @bingo_game.name %></h1>
+  <div class="grid grid-cols-5 w-full max-w-xl mx-auto p-4 bg-gray-100 rounded-lg shadow-lg"
+     data-controller="squares"
+     data-squares-bingo-game-id-value="<%= @bingo_game.id %>">
+  <% 25.times do |i| %>
+    <%
+      square = @bingo_game.squares.find_by(ordering: i)
+      content = square&.content || ''
+      square_id = square&.id
+      is_free_space = (i == 12)
+    %>
+    <div class="aspect-square flex items-center justify-center bg-white border border-gray-300 rounded text-xl font-bold">
+      <% if !is_free_space %>
+        <textarea
+          class="resize-none h-full w-full text-center p-2 focus:outline-none"
+          data-square-id="<%= square_id %>"
+          data-square-ordering="<%= i %>"
+          data-action="blur->squares#updateContent"
+          placeholder="Enter text"
+        ><%= content %></textarea>
+      <% else %>
+        Free
+      <% end %>
+    </div>
+  <% end %>
+</div>
+</section>

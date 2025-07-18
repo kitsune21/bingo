@@ -18,6 +18,16 @@ class BingoGamesController < ApplicationController
     end
   end
 
+  def generate_squares
+    @bingo_game = BingoGame.includes(:squares).find(params[:id])
+
+    (0..24).each do |i|
+      @bingo_game.squares.find_or_initialize_by(ordering: i)
+    end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to root_path, alert: "Bingo game not found"
+  end
+
   private
 
   def bingo_game_params
