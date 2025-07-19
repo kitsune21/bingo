@@ -1,6 +1,7 @@
 <section>
-  <nav class="flex pl-4">
+  <nav class="flex pl-4 gap-2">
     <%= link_to "Back", root_path, class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
+    <%= link_to "Delete Game", bingo_game_path(@bingo_game), data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this game?" }, class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
   </nav>
   <h1 class="text-4xl font-extrabold text-center text-gray-900 pb-8"><%= @bingo_game.name %></h1>
   <div class="grid grid-cols-5 w-full max-w-xl mx-auto p-4 bg-gray-100 rounded-lg shadow-lg"

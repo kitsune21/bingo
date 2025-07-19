@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   get "bingo_games/new"
   get "bingo_games/create"
   resources :passwords, param: :token
-  resources :bingo_games, only: [ :index, :new, :create ]
+  resources :bingo_games, only: [ :index, :new, :create, :destroy ]
   resources :bingo_games do
     resources :squares, only: [ :create, :update ]
     member do
