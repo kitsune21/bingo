@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :squares, only: [ :create, :update ]
     member do
       get :generate_squares
+      get :play_bingo
     end
   end
 

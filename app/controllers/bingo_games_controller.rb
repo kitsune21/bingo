@@ -1,6 +1,6 @@
 class BingoGamesController < ApplicationController
   before_action :require_authentication
-  before_action :set_bingo_game, only: %i[ update destroy ]
+  before_action :set_bingo_game, only: %i[ update destroy play_bingo ]
 
   def index
     @bingo_games = current_user.bingo_games
@@ -13,7 +13,7 @@ class BingoGamesController < ApplicationController
   def create
     @bingo_game = current_user.bingo_games.build(bingo_game_params)
     if @bingo_game.save
-      redirect_to root_path, notice: "Bingo game has been created!"
+      redirect_to generate_squares_bingo_game_path(@bingo_game.id), notice: "Bingo game has been created!"
     else
       render :new, status: :unprocessable_entity
     end
@@ -27,6 +27,8 @@ class BingoGamesController < ApplicationController
     end
   rescue ActiveRecord::RecordNotFound
     redirect_to root_path, alert: "Bingo game not found"
+  end
+  def play_bingo
   end
 
   def destroy

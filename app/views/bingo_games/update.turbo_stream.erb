@@ -1,19 +1,19 @@
 <%= turbo_stream.replace "bingo-games-container" do %>
-  <div data-controller="bingo-games" id="bingo-games-container"> <%# Ensure this ID is used in the HTML as well %>
+  <div data-controller="bingo-games" id="bingo-games-container">
     <h1 data-action="click->bingo-games#showEditTitle" class="text-4xl font-extrabold text-center text-gray-900 pb-8" id="title" data-bingo-games-target="title">
       <%= @bingo_game.name %>
     </h1>
 
     <div id="edit-title" style="display: none;" data-bingo-games-target="editTitle" class="max-w-xl mx-auto">
       <%= form_with model: @bingo_game, url: bingo_game_path(@bingo_game), method: :patch,
-                    data: { turbo: true, action: "turbo:submit-end->bingo-games#updateTitle" } do |form| %>
+        data: { turbo: true, action: "turbo:submit-end->bingo-games#updateTitle" } do |form| 
+      %>
         <div class="pb-2">
-          <%= form.label :name, class: "block text-sm font-medium text-gray-700 mb-1"%>
           <%= form.text_field :name, data: { bingo_games_target: "editField" }, class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500" %>
         </div>
         <div class="flex justify-end gap-2">
-          <%= form.submit "Save", class: "btn btn-primary" %>
-          <button type="button" class="btn btn-secondary" data-action="click->bingo-games#hideEditTitle">Cancel</button>
+          <%= form.submit "Save" %>
+          <button type="button" data-action="click->bingo-games#hideEditTitle">Cancel</button>
         </div>
       <% end %>
     </div>
