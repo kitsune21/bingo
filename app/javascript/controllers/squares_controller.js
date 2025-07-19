@@ -2,18 +2,14 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   static targets = ["textarea"];
-  static values = { bingoGameId: Number }; // Define the value
+  static values = { bingoGameId: Number };
 
-  // You could debounce this if you prefer.
-  // This method will be called when a textarea loses focus (blur)
-  // or on every input (input) if you change data-action.
   updateContent(event) {
-    console.log("updating stuff");
     const textarea = event.target;
     const content = textarea.value;
     const ordering = textarea.dataset.squareOrdering;
     let squareId = textarea.dataset.squareId;
-    const bingoGameId = this.bingoGameIdValue; // Use the defined value
+    const bingoGameId = this.bingoGameIdValue;
 
     let url;
     let method;
@@ -42,7 +38,6 @@ export default class extends Controller {
     })
       .then((response) => {
         if (!response.ok) {
-          // Handle non-2xx responses
           return response.json().then((err) => {
             throw new Error(
               err.errors ? err.errors.join(", ") : "Unknown error"
@@ -54,14 +49,12 @@ export default class extends Controller {
       .then((data) => {
         if (data.status === "success") {
           if (method === "POST" && data.square_id) {
-            textarea.dataset.squareId = data.square_id; // Update squareId for future updates
+            textarea.dataset.squareId = data.square_id;
           }
           console.log("Square updated/created successfully:", data);
-          // Optionally add a visual cue for success (e.g., a green border for a moment)
         } else {
           console.error("Error updating/creating square:", data.errors);
           alert("Failed to update square: " + data.errors.join(", "));
-          // Optionally revert textarea content or show error state
         }
       })
       .catch((error) => {
