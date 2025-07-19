@@ -405,6 +405,7 @@ DEPENDENCIES
   jbuilder
   jsbundling-rails
   kamal
+  launchy
   letter_opener
   propshaft
   puma (>= 5.0)

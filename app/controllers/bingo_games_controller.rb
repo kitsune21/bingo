@@ -28,6 +28,12 @@ class BingoGamesController < ApplicationController
     redirect_to root_path, alert: "Bingo game not found"
   end
 
+  def destroy
+    @bingo_game = BingoGame.find(params[:id])
+    if @bingo_game.destroy()
+      redirect_to root_path, notice: "Bingo game has been deleted"
+    end
+  end
   private
 
   def bingo_game_params
