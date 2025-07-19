@@ -1,51 +1,52 @@
-<section>
+<div>
   <nav class="flex pl-4 gap-2">
     <%= link_to "Back", root_path, class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
     <%= link_to "Delete Game", bingo_game_path(@bingo_game), data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this game?" }, class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
   </nav>
-
-    <div data-controller="bingo-games" id="bingo-games-container">
+  <div data-controller="bingo-games" id="bingo-games-container">
     <h1 data-action="click->bingo-games#showEditTitle" class="text-4xl font-extrabold text-center text-gray-900 pb-8" id="title" data-bingo-games-target="title">
       <%= @bingo_game.name %>
     </h1>
 
     <div id="edit-title" style="display: none;" data-bingo-games-target="editTitle" class="max-w-xl mx-auto">
       <%= form_with model: @bingo_game, url: bingo_game_path(@bingo_game), method: :patch,
-        data: { turbo: true, action: "turbo:submit-end->bingo-games#updateTitle" } do |form|
+        data: { turbo: true, action: "turbo:submit-end->bingo-games#updateTitle" } do |form| 
       %>
         <div class="pb-2">
           <%= form.text_field :name, data: { bingo_games_target: "editField" }, class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500" %>
         </div>
         <div class="flex justify-end gap-2">
-          <%= form.submit "Save" %>
+          <%= form.submit "Save"%>
           <button type="button" data-action="click->bingo-games#hideEditTitle">Cancel</button>
         </div>
       <% end %>
     </div>
   </div>
-
   <div class="grid grid-cols-5 w-full max-w-xl mx-auto p-4 bg-gray-100 rounded-lg shadow-lg"
-     data-controller="squares"
-     data-squares-bingo-game-id-value="<%= @bingo_game.id %>">
-  <% 25.times do |i| %>
+    data-controller="squares"
+    data-squares-bingo-game-id-value="<%= @bingo_game.id %>"
+  >
+    <% 25.times do |i| %>
     <%
       square = @bingo_game.squares.find_by(ordering: i)
       content = square&.content || ''
       square_id = square&.id
       is_free_space = (i == 12)
+      completed = square&.completed || false
     %>
-      <div class="aspect-square flex items-center justify-center bg-white border border-gray-300 rounded text-xl font-bold">
-        <% if !is_free_space %>
-          <textarea
-            class="resize-none h-full w-full text-center p-2 focus:outline-none"
-            data-square-id="<%= square_id %>"
-            data-square-ordering="<%= i %>"
-            data-action="blur->squares#updateContent"
-            placeholder="Enter text"><%= content %></textarea>
-        <% else %>
-          Free
-        <% end %>
-      </div>
+    <div class="aspect-square flex items-center justify-center bg-white border border-gray-300 rounded text-xl font-bold">
+      <% if !is_free_space %>
+        <button
+          class="resize-none h-full w-full text-center p-2 focus:outline-none transition-all duration-200 ease-in-out <% if completed %> completed-square <% end %>"
+          data-square-id="<%= square_id %>"
+          data-square-ordering="<%= i %>"
+          data-action="click->squares#updateCompleted"
+          data-completed="<%= completed %>"
+        ><%= content %></button>
+      <% else %>
+        <p class="resize-none h-full w-full flex items-center justify-center p-2 completed-square">Free</p>
+      <% end %>
+    </div>
     <% end %>
   </div>
-</section>
+</div>

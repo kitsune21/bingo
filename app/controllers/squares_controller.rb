@@ -12,13 +12,24 @@ class SquaresController < ApplicationController
 
   def update
     @square = @bingo_game.squares.find(params[:id])
+
+    if params[:square][:completed].present?
+      if params[:square][:completed].to_s == "true"
+        params[:square][:completed_on] = DateTime.current
+      else
+        params[:square][:completed_on] = nil
+      end
+    end
+
     if @square.update(square_params)
       render json: { status: "success", message: "Square updated successfully" }
     else
-      render json: { status: "error", errors: @square.errors.full_messages }, status: :unprocessable_entity
+      render json: { status: "error", errors: @square.errors.full_messages },
+        status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordNotFound
-    render json: { status: "error", message: "Square not found" }, status: :not_found
+    render json: { status: "error", message: "Square not found" },
+      status: :not_found
   end
   private
 
@@ -29,7 +40,7 @@ class SquaresController < ApplicationController
   end
 
   def square_params
-    params.require(:square).permit(:content, :ordering)
+    params.require(:square).permit(:content, :ordering, :completed, :completed_on)
   end
 
   def bingo_game_params

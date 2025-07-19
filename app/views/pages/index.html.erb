@@ -1,19 +1,29 @@
 <div class="max-w-lg mx-auto pt-8 p-6 bg-white rounded shadow">
-  <p class="text-lg mb-4">Welcome to Bingo!</p>
-  <div>
-    <h1>Bingo Games</h1>
+  <h1 class="text-4xl pb-4">Welcome to Bingo!</h1>
+  <div class="py-2">
+    <h2 class="text-2xl">Work on your goals:</h2>
     <div class="flex flex-col">
       <% if @bingo_games.any? %>
         <% @bingo_games.each do |game| %>
+          <%= link_to game.name, play_bingo_bingo_game_path(game.id), class: "text-blue-600 underline" %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <div class="py-2">
+    <h2 class="text-2xl">Bingo Games to finish filling out:</h2>
+    <div class="flex flex-col">
+      <% if @incomplete_bingo_games.any? %>
+        <% @incomplete_bingo_games.each do |game| %>
           <%= link_to game.name,
             generate_squares_bingo_game_path(game.id),
             class: "text-blue-600 underline"
           %>
         <% end %>
       <% else %>
-        <p>You don't currently have any bingo games</p>
+        <p>All your games are filled out.</p>
       <% end %>
-      <div>
+      <div class="py-4">
         <%= link_to "Start a new Bingo Board", new_bingo_game_path, class: "text-blue-600 underline" %>
       </div>
     </div>
