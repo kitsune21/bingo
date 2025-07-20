@@ -22,7 +22,10 @@ class SquaresController < ApplicationController
     end
 
     if @square.update(square_params)
-      render json: { status: "success", message: "Square updated successfully" }
+      total_squares = 25
+      completed_squares_count = @bingo_game.squares.count(&:completed) + 1
+      percentage_completed = total_squares.zero? ? 0 : (completed_squares_count.to_f / total_squares.to_f * 100).round(0)
+      render json: { status: "success", message: "Square updated successfully", percentage_completed: percentage_completed }, status: :ok
     else
       render json: { status: "error", errors: @square.errors.full_messages },
         status: :unprocessable_entity
