@@ -1,14 +1,14 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["textarea"];
+  static targets = ["textarea", "percentageCompleted"];
   static values = { bingoGameId: Number };
 
   connect() {
     console.log("Squares controller connected!");
   }
 
-  updateCompleted(event) {
+  async updateCompleted(event) {
     const button = event.target;
     const squareId = button.dataset.squareId;
     const completedSquare = JSON.parse(button.dataset.completed);
@@ -50,6 +50,11 @@ export default class extends Controller {
           } else {
             button.classList.remove("completed-square");
           }
+
+          if (this.hasPercentageCompletedTarget) {
+            this.percentageCompletedTarget.innerText =
+              data.percentage_completed;
+          }
         } else {
           console.error("Error updating square:", data.errors);
           alert("Failed to update square: " + data.errors.join(", "));
@@ -67,6 +72,7 @@ export default class extends Controller {
     const ordering = textarea.dataset.squareOrdering;
     let squareId = textarea.dataset.squareId;
     const bingoGameId = this.bingoGameIdValue;
+    const isCompleted = JSON.parse(textarea.dataset.completed) ? false : false;
 
     let url;
     let method;
@@ -90,6 +96,7 @@ export default class extends Controller {
         square: {
           content: content,
           ordering: ordering,
+          completed: isCompleted,
         },
       }),
     })

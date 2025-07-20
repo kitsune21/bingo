@@ -5,7 +5,7 @@
     <div class="flex flex-col">
       <% if @bingo_games.any? %>
         <% @bingo_games.each do |game| %>
-          <%= link_to game.name, play_bingo_bingo_game_path(game.id), class: "text-blue-600 underline" %>
+          <span class="flex gap-1"><%= link_to game.name, play_bingo_bingo_game_path(game.id), class: "text-blue-600 underline" %><span>(<%= game.percentage_completed %>% Done)</span></span>
         <% end %>
       <% end %>
     </div>

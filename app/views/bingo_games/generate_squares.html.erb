@@ -33,6 +33,7 @@
       content = square&.content || ''
       square_id = square&.id
       is_free_space = (i == 12)
+      completed = square&.completed
     %>
       <div class="aspect-square flex items-center justify-center bg-white border border-gray-300 rounded text-xl font-bold">
         <% if !is_free_space %>
@@ -41,6 +42,7 @@
             data-square-id="<%= square_id %>"
             data-square-ordering="<%= i %>"
             data-action="blur->squares#updateContent"
+            data-completed="<%= completed %>"
             placeholder="Enter text"><%= content %></textarea>
         <% else %>
           Free
