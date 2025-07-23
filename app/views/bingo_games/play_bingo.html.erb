@@ -33,28 +33,38 @@
     </div>
     
     <div class="grid grid-cols-5 w-full max-w-xl mx-auto p-4 bg-gray-100 rounded-lg shadow-lg">
-      <% 25.times do |i| %>
-      <%
-        square = @bingo_game.squares.find_by(ordering: i)
-        content = square&.content || ''
-        square_id = square&.id
-        is_free_space = (i == 12)
-        completed = square&.completed || false
-      %>
-      <div class="aspect-square flex items-center justify-center bg-white border border-gray-300 rounded text-xl font-bold">
-        <% if !is_free_space %>
-          <button
-            class="resize-none h-full w-full text-center p-2 focus:outline-none transition-all duration-200 ease-in-out <% if completed %> completed-square <% end %>"
-            data-square-id="<%= square_id %>"
-            data-square-ordering="<%= i %>"
-            data-action="click->squares#updateCompleted"
-            data-completed="<%= completed %>"
-          ><%= content %></button>
-        <% else %>
-          <p class="resize-none h-full w-full flex items-center justify-center p-2 completed-square">Free</p>
-        <% end %>
-      </div>
+  <% 25.times do |i| %>
+  <%
+    square = @bingo_game.squares.find_by(ordering: i)
+    content = square&.content || ''
+    square_id = square&.id
+    is_free_space = (i == 12)
+    completed = square&.completed || false
+    quantity = square&.quantity
+    quantity_completed = square&.quantity_completed || 0
+  %>
+  <div class="group overflow-x-hidden overflow-y-auto aspect-square flex items-center justify-center bg-white border border-gray-300 rounded text-xl font-bold relative">
+    <% if !is_free_space %>
+      <button
+        class="resize-none h-full w-full text-center p-2 focus:outline-none transition-all duration-200 ease-in-out <% if completed %> completed-square <% end %>"
+        data-square-id="<%= square_id %>"
+        data-square-ordering="<%= i %>"
+        data-action="click->squares#updateCompleted"
+        data-completed="<%= completed %>"
+        data-quantity-completed="<%= quantity_completed %>"
+        data-quantity="<%= quantity %>"
+      ><%= content %></button>
+      <% if quantity %>
+        <div
+          class="group-hover:left-0.5 absolute bottom-0.5 -left-20 justify-center z-10 border border-slate-500 rounded-lg bg-white transition-all duration-150 ease-in-out"
+        >
+	        <p class="quantity-display"><%= quantity_completed %>/<%= quantity %></p>
+        </div>
       <% end %>
-    </div>
+    <% else %>
+      <p class="resize-none h-full w-full flex items-center justify-center p-2 completed-square">Free</p>
+    <% end %>
   </div>
+  <% end %>
+</div>
 </div>

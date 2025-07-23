@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_18_153246) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_22_002237) do
   create_table "bingo_games", force: :cascade do |t|
     t.string "name"
     t.integer "user_id", null: false
@@ -36,6 +36,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_18_153246) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "ordering"
+    t.integer "quantity"
+    t.integer "quantity_completed"
     t.index ["bingo_game_id"], name: "index_squares_on_bingo_game_id"
   end
 
