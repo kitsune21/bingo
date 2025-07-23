@@ -13,17 +13,17 @@ class SquaresController < ApplicationController
   def update
     @square = @bingo_game.squares.find(params[:id])
 
-    if params[:square][:completed].present?
-      if params[:square][:completed].to_s == "true"
-        params[:square][:completed_on] = DateTime.current
-      else
-        params[:square][:completed_on] = nil
-      end
+    permitted_params = square_params
+
+    if permitted_params[:completed].to_s == "true"
+      permitted_params[:completed_on] = DateTime.current
+    else
+      permitted_params[:completed_on] = nil
     end
 
-    if @square.update(square_params)
+    if @square.update(permitted_params)
       total_squares = 25
-      completed_squares_count = @bingo_game.squares.count(&:completed) + 1
+      completed_squares_count = @bingo_game.squares.where(completed: true).count + 1
       percentage_completed = total_squares.zero? ? 0 : (completed_squares_count.to_f / total_squares.to_f * 100).round(0)
       render json: { status: "success", message: "Square updated successfully", percentage_completed: percentage_completed }, status: :ok
     else
@@ -43,7 +43,7 @@ class SquaresController < ApplicationController
   end
 
   def square_params
-    params.require(:square).permit(:content, :ordering, :completed, :completed_on)
+    params.require(:square).permit(:content, :ordering, :completed, :completed_on, :quantity, :quantity_completed)
   end
 
   def bingo_game_params

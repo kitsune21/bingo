@@ -35,15 +35,30 @@
       is_free_space = (i == 12)
       completed = square&.completed
     %>
-      <div class="aspect-square flex items-center justify-center bg-white border border-gray-300 rounded text-xl font-bold">
+      <div class="aspect-square flex items-center justify-center bg-white border border-gray-300 rounded text-xl font-bold relative">
         <% if !is_free_space %>
           <textarea
-            class="resize-none h-full w-full text-center p-2 focus:outline-none"
+            id="<%= i %>"
+            class="resize-none h-full w-full text-center p-0.5 focus:outline-none"
             data-square-id="<%= square_id %>"
             data-square-ordering="<%= i %>"
-            data-action="blur->squares#updateContent"
+            data-action="blur->squares#updateContent input->squares#checkForNumbers focus->squares#checkForNumbers"
             data-completed="<%= completed %>"
-            placeholder="Enter text"><%= content %></textarea>
+            placeholder="What's your goal?"><%= content %></textarea>
+
+          <div
+            class="absolute -bottom-8 -left-0.5 w-28 justify-center z-10"
+            id="<%= i %>-input-wrapper"
+            style="display: none;"
+          >
+            <input
+              class="border border-green-500 p-0.5 rounded bg-white w-full"
+              type="number"
+              placeholder="Quantity"
+              id="<%= i %>-input"
+              value="0"
+            >
+          </div>
         <% else %>
           Free
         <% end %>
