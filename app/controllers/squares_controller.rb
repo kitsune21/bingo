@@ -1,6 +1,7 @@
 class SquaresController < ApplicationController
   before_action :require_authentication
   before_action :set_bingo_game
+
   def create
     @square = @bingo_game.squares.build(square_params)
     if @square.save
@@ -13,19 +14,25 @@ class SquaresController < ApplicationController
   def update
     @square = @bingo_game.squares.find(params[:id])
 
-    permitted_params = square_params
+    updated_attributes = square_params.dup
 
-    if permitted_params[:completed].to_s == "true"
-      permitted_params[:completed_on] = DateTime.current
-    else
-      permitted_params[:completed_on] = nil
+    if updated_attributes.key?(:quantity) && @square.quantity != updated_attributes[:quantity]
+      updated_attributes[:quantity_completed] = 0
+    elsif updated_attributes.key?(:content) && @square.content != updated_attributes[:content]
+      updated_attributes[:quantity_completed] = 0
     end
 
-    if @square.update(permitted_params)
+    if updated_attributes[:completed].to_s == "true"
+      updated_attributes[:completed_on] = DateTime.current
+    elsif updated_attributes.key?(:completed) && updated_attributes[:completed].to_s == "false"
+      updated_attributes[:completed_on] = nil
+    end
+
+    if @square.update(updated_attributes)
       total_squares = 25
       completed_squares_count = @bingo_game.squares.where(completed: true).count + 1
       percentage_completed = total_squares.zero? ? 0 : (completed_squares_count.to_f / total_squares.to_f * 100).round(0)
-      render json: { status: "success", message: "Square updated successfully", percentage_completed: percentage_completed }, status: :ok
+      render json: { status: "success", message: "Square updated successfully", percentage_completed: percentage_completed, square: @square }, status: :ok
     else
       render json: { status: "error", errors: @square.errors.full_messages },
         status: :unprocessable_entity
@@ -34,6 +41,7 @@ class SquaresController < ApplicationController
     render json: { status: "error", message: "Square not found" },
       status: :not_found
   end
+
   private
 
   def set_bingo_game

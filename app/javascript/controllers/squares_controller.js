@@ -18,7 +18,8 @@ export default class extends Controller {
     if (quantityInputWrapper && quantityInput) {
       if (numberPattern.test(value)) {
         quantityInputWrapper.style.display = "block";
-        quantityInput.value = value.match(numberPattern)[0];
+        quantityInput.value =
+          value === null ? 0 : value.match(numberPattern)[0];
       } else {
         quantityInputWrapper.style.display = "none";
       }
@@ -63,6 +64,10 @@ export default class extends Controller {
       };
     }
 
+    if (currentCompleted && currentQuantityCompleted === currentQuantity) {
+      alert("This will reset your progress.");
+    }
+
     const url = `/bingo_games/${bingoGameId}/squares/${squareId}`;
 
     fetch(url, {
@@ -104,12 +109,12 @@ export default class extends Controller {
 
           if (newCompletedState) {
             button.classList.add("completed-square");
-            if (this.hasPercentageCompletedTarget) {
-              this.percentageCompletedTarget.innerText =
-                data.percentage_completed;
-            }
           } else {
             button.classList.remove("completed-square");
+          }
+          if (this.hasPercentageCompletedTarget) {
+            this.percentageCompletedTarget.innerText =
+              data.percentage_completed;
           }
         } else {
           console.error("Error updating square:", data.errors);
@@ -128,7 +133,6 @@ export default class extends Controller {
     const ordering = textarea.dataset.squareOrdering;
     let squareId = textarea.dataset.squareId;
     const bingoGameId = this.bingoGameIdValue;
-    const isCompleted = textarea.dataset.completed === "true";
     const id = textarea.id;
     const quantityInputWrapper = document.getElementById(`${id}-input-wrapper`);
     const quantityInputValue = document.getElementById(`${id}-input`).value;
@@ -155,7 +159,7 @@ export default class extends Controller {
         square: {
           content: content,
           ordering: ordering,
-          completed: isCompleted,
+          completed: false,
           quantity: quantityInputValue,
         },
       }),
