@@ -7,11 +7,9 @@
   color: #065f46; /* Darker green text */
 }
 
-/* If you want to use the data-[completed=true] attribute directly for styling */
-/* This is also valid, but adding a class might be more flexible for complex styles */
-button[data-completed="true"] {
-  background-color: #d1fae5;
-  border-color: #34d399;
-  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.5);
-  color: #065f46;
+.bingod-square {
+  background-color: #d1eafa;
+  border-color: #348bd3;
+  box-shadow: 0 0 0 3px rgba(52, 123, 211, 0.5);
+  color: #062b5f;
 }

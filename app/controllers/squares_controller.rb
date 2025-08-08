@@ -1,3 +1,4 @@
+# app/controllers/squares_controller.rb
 class SquaresController < ApplicationController
   before_action :require_authentication
   before_action :set_bingo_game
@@ -13,7 +14,6 @@ class SquaresController < ApplicationController
 
   def update
     @square = @bingo_game.squares.find(params[:id])
-
     updated_attributes = square_params.dup
 
     if updated_attributes.key?(:quantity) && @square.quantity != updated_attributes[:quantity]
@@ -23,16 +23,42 @@ class SquaresController < ApplicationController
     end
 
     if updated_attributes[:completed].to_s == "true"
-      updated_attributes[:completed_on] = DateTime.current
+      if @square.quantity && @square.quantity > 0 && updated_attributes[:quantity_completed].to_i < @square.quantity
+        updated_attributes[:completed] = false
+      else
+        updated_attributes[:completed_on] = DateTime.current
+      end
     elsif updated_attributes.key?(:completed) && updated_attributes[:completed].to_s == "false"
       updated_attributes[:completed_on] = nil
+      updated_attributes[:completed] = false
     end
 
     if @square.update(updated_attributes)
       total_squares = 25
-      completed_squares_count = @bingo_game.squares.where(completed: true).count + 1
+      @bingo_game.squares.reload
+      completed_squares_count = @bingo_game.squares.where(completed: true).count
+
+      unless @bingo_game.squares.find_by(ordering: 12)&.completed
+        completed_squares_count += 1
+      end
+
       percentage_completed = total_squares.zero? ? 0 : (completed_squares_count.to_f / total_squares.to_f * 100).round(0)
-      render json: { status: "success", message: "Square updated successfully", percentage_completed: percentage_completed, square: @square }, status: :ok
+
+      bingo_achieved = false
+      unless @bingo_game.has_bingo?
+        bingo_achieved = @bingo_game.check_for_bingo!
+      end
+
+      completed_squares = @bingo_game.get_completed_squares
+
+      render json: {
+        status: "success",
+        message: "Square updated successfully",
+        percentage_completed: percentage_completed,
+        square: @square,
+        bingo_achieved: bingo_achieved,
+        completed_squares: completed_squares
+      }, status: :ok
     else
       render json: { status: "error", errors: @square.errors.full_messages },
         status: :unprocessable_entity
@@ -46,15 +72,11 @@ class SquaresController < ApplicationController
 
   def set_bingo_game
     @bingo_game = BingoGame.find(params[:bingo_game_id])
-  rescue
+  rescue ActiveRecord::RecordNotFound # Catch specific exception
     redirect_to root_path, alert: "Bingo game not found"
   end
 
   def square_params
     params.require(:square).permit(:content, :ordering, :completed, :completed_on, :quantity, :quantity_completed)
-  end
-
-  def bingo_game_params
-    params.require(:bingo_game).permit(square_attributes: [ :id, :content, :ordering, :_destroy ])
   end
 end
