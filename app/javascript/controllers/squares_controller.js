@@ -45,6 +45,15 @@ export default class extends Controller {
       if (currentCompleted) {
         newQuantityCompleted = 0;
         newCompletedState = false;
+        if (currentQuantityCompleted === currentQuantity) {
+          if (
+            !confirm(
+              "This will reset your progress for this square. Are you sure?"
+            )
+          ) {
+            return;
+          }
+        }
       } else {
         newQuantityCompleted = currentQuantityCompleted + 1;
         if (newQuantityCompleted > currentQuantity) {
@@ -62,10 +71,6 @@ export default class extends Controller {
       dataToSend = {
         completed: newCompletedState,
       };
-    }
-
-    if (currentCompleted && currentQuantityCompleted === currentQuantity) {
-      alert("This will reset your progress.");
     }
 
     const url = `/bingo_games/${bingoGameId}/squares/${squareId}`;
@@ -95,27 +100,77 @@ export default class extends Controller {
         if (data.status === "success") {
           console.log("Square updated successfully:", data);
 
-          button.dataset.completed = newCompletedState;
+          button.dataset.completed = data.square.completed;
           if (currentQuantity > 0) {
-            button.dataset.quantityCompleted = newQuantityCompleted;
+            button.dataset.quantityCompleted = data.square.quantity_completed;
 
             const quantityDisplay = button
               .closest(".group")
               .querySelector(".quantity-display");
             if (quantityDisplay) {
-              quantityDisplay.textContent = `${newQuantityCompleted}/${currentQuantity}`;
+              quantityDisplay.textContent = `${data.square.quantity_completed}/${currentQuantity}`;
             }
           }
 
-          if (newCompletedState) {
+          if (data.square.completed) {
             button.classList.add("completed-square");
           } else {
             button.classList.remove("completed-square");
           }
+
           if (this.hasPercentageCompletedTarget) {
             this.percentageCompletedTarget.innerText =
               data.percentage_completed;
           }
+
+          const allSquares = document.querySelectorAll(
+            "[data-square-ordering]"
+          );
+
+          if (data.completed_squares && Array.isArray(data.completed_squares)) {
+            allSquares.forEach((squareButton) => {
+              if (
+                data.completed_squares.includes(squareButton.dataset.ordering)
+              ) {
+                squareButton.classList.add("completed-square");
+              }
+            });
+          }
+
+          const allFreeSquares = document.querySelectorAll(
+            "p[data-square-ordering]"
+          );
+
+          const bingos = new Set(data.bingo_achieved?.map(String)) || new Set();
+
+          allSquares.forEach((squareButton) => {
+            const ordering = squareButton.dataset.squareOrdering;
+            const isCompleted = squareButton.dataset.completed === "true";
+            if (bingos.has(ordering)) {
+              squareButton.classList.add("bingod-square");
+              if (isCompleted) {
+                squareButton.classList.add("completed-square");
+              } else {
+                squareButton.classList.remove("completed-square");
+              }
+            } else {
+              squareButton.classList.remove("bingod-square");
+              if (isCompleted) {
+                squareButton.classList.add("completed-square");
+              } else {
+                squareButton.classList.remove("completed-square");
+              }
+            }
+          });
+
+          allFreeSquares.forEach((freeSquare) => {
+            const ordering = freeSquare.dataset.squareOrdering;
+            if (bingos.has(ordering)) {
+              freeSquare.classList.add("bingod-square");
+            } else {
+              freeSquare.classList.remove("bingod-square");
+            }
+          });
         } else {
           console.error("Error updating square:", data.errors);
           alert("Failed to update square: " + data.errors.join(", "));

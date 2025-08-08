@@ -11,50 +11,43 @@
     id="bingo-game-detail-container"
   >
     <div data-controller="bingo-games" id="bingo-games-container">
-      <h1 data-action="click->bingo-games#showEditTitle" class="text-4xl font-extrabold text-center text-gray-900 pb-8" id="title" data-bingo-games-target="title">
+      <h1 class="text-4xl font-extrabold text-center text-gray-900 pb-8" id="title">
         <%= @bingo_game.name %>
       </h1>
 
       <div class="flex justify-center"><span data-squares-target="percentageCompleted"><%= @bingo_game.percentage_completed %></span>% Completed</div>
-
-      <div id="edit-title" style="display: none;" data-bingo-games-target="editTitle" class="max-w-xl mx-auto">
-        <%= form_with model: @bingo_game, url: bingo_game_path(@bingo_game), method: :patch,
-          data: { turbo: true, action: "turbo:submit-end->bingo-games#updateTitle" } do |form| 
-        %>
-          <div class="pb-2">
-            <%= form.text_field :name, data: { bingo_games_target: "editField" }, class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500" %>
-          </div>
-          <div class="flex justify-end gap-2">
-            <%= form.submit "Save"%>
-            <button type="button" data-action="click->bingo-games#hideEditTitle">Cancel</button>
-          </div>
-        <% end %>
-      </div>
-    </div>
-    
-    <div class="grid grid-cols-5 w-full max-w-xl mx-auto p-4 bg-gray-100 rounded-lg shadow-lg">
+  <div class="grid grid-cols-5 w-full max-w-xl mx-auto p-4 bg-gray-100 rounded-lg shadow-lg">
+  <%
+    bingo_orderings = @bingo_game.check_for_bingo!
+  %>
   <% 25.times do |i| %>
   <%
     square = @bingo_game.squares.find_by(ordering: i)
     content = square&.content || ''
     square_id = square&.id
     is_free_space = (i == 12)
-    completed = square&.completed || false
+    completed_display_state = (square&.completed || false) || is_free_space
     quantity = square&.quantity
     quantity_completed = square&.quantity_completed || 0
+    bingod_square = bingo_orderings && bingo_orderings.include?(square&.ordering)
   %>
   <div class="group overflow-x-hidden overflow-y-auto aspect-square flex items-center justify-center bg-white border border-gray-300 rounded text-xl font-bold relative">
     <% if !is_free_space %>
       <button
-        class="resize-none h-full w-full text-center p-2 focus:outline-none transition-all duration-200 ease-in-out <% if completed %> completed-square <% end %>"
+        class="resize-none h-full w-full text-center p-2 focus:outline-none transition-all duration-200 ease-in-out
+          <% if bingod_square %>
+            bingod-square
+          <% elsif completed_display_state %>
+            completed-square
+          <% end %>"
         data-square-id="<%= square_id %>"
         data-square-ordering="<%= i %>"
         data-action="click->squares#updateCompleted"
-        data-completed="<%= completed %>"
+        data-completed="<%= completed_display_state %>"
         data-quantity-completed="<%= quantity_completed %>"
         data-quantity="<%= quantity %>"
       ><%= content %></button>
-      <% if quantity > 0 %>
+      <% if quantity && quantity > 0 %>
         <div
           class="group-hover:left-0.5 absolute bottom-0.5 -left-20 justify-center z-10 border border-slate-500 rounded-lg bg-white transition-all duration-150 ease-in-out"
         >
@@ -62,9 +55,8 @@
         </div>
       <% end %>
     <% else %>
-      <p class="resize-none h-full w-full flex items-center justify-center p-2 completed-square">Free</p>
+      <p class="resize-none h-full w-full flex items-center justify-center p-2 bingod-square">Free</p>
     <% end %>
   </div>
   <% end %>
-</div>
 </div>
